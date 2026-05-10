@@ -153,11 +153,11 @@ class _PlayerScreenState extends ConsumerState<PlayerScreen> with TickerProvider
       builder: (_) => Padding(padding: const EdgeInsets.fromLTRB(20,12,20,32), child: Column(children: [
         Container(width:40,height:4,decoration:BoxDecoration(color:AppColors.divider,borderRadius:BorderRadius.circular(2))),
         const SizedBox(height:16),
-        Text('Queue (\${queue.length})',style:const TextStyle(fontSize:18,fontWeight:FontWeight.bold,color:AppColors.textPrimary)),
+        Text('Queue (${queue.length})',style:const TextStyle(fontSize:18,fontWeight:FontWeight.bold,color:AppColors.textPrimary)),
         const SizedBox(height:12),
         Expanded(child:ListView.builder(physics:const BouncingScrollPhysics(),itemCount:queue.length,
           itemBuilder:(_,i)=>ListTile(
-            leading:Text('\${i+1}',style:const TextStyle(color:AppColors.textMuted,fontSize:13)),
+            leading:Text('${i+1}',style:const TextStyle(color:AppColors.textMuted,fontSize:13)),
             title:Text(queue[i].title,maxLines:1,overflow:TextOverflow.ellipsis,
                 style:const TextStyle(color:AppColors.textPrimary,fontSize:14)),
             subtitle:Text(queue[i].artist,style:const TextStyle(color:AppColors.textSecondary,fontSize:12)),
@@ -170,7 +170,7 @@ class _PlayerScreenState extends ConsumerState<PlayerScreen> with TickerProvider
       backgroundColor:AppColors.surface,
       title:const Text('Sleep Timer',style:TextStyle(color:AppColors.textPrimary)),
       content:Wrap(spacing:8,runSpacing:8,children:[15,30,45,60,90].map((m)=>ActionChip(
-        label:Text('\$m min'),backgroundColor:AppColors.glassBg,
+        label:Text('$m min'),backgroundColor:AppColors.glassBg,
         labelStyle:const TextStyle(color:AppColors.textPrimary),
         onPressed:(){ ref.read(audioHandlerProvider).customAction('setSleepTimer',{'minutes':m}); Navigator.pop(context); }
       )).toList()),
