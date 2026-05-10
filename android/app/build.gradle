@@ -63,6 +63,7 @@ flutter {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.10"
+    // Note: kotlin-stdlib is provided automatically by the Kotlin plugin (settings.gradle).
+    // Do NOT add it explicitly — it causes duplicate class errors with AGP 8.x.
     implementation "androidx.multidex:multidex:2.0.1"
 }
