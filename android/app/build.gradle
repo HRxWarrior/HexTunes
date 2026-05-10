@@ -4,6 +4,21 @@ plugins {
     id "dev.flutter.flutter-gradle-plugin"
 }
 
+// Read flutter version properties from local.properties (injected by Flutter
+// tool at build time). Fall back to safe defaults so the project still
+// evaluates correctly in environments where local.properties hasn't been
+// written yet (e.g. just after a fresh checkout before flutter pub get).
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withReader("UTF-8") { reader ->
+        localProperties.load(reader)
+    }
+}
+
+def flutterVersionCode = localProperties.getProperty("flutter.versionCode") ?: "1"
+def flutterVersionName = localProperties.getProperty("flutter.versionName") ?: "1.0.0"
+
 android {
     namespace "com.hextunes.app"
     compileSdk flutter.compileSdkVersion
@@ -19,15 +34,13 @@ android {
     }
 
     sourceSets {
-        main.java.srcDirs += 'src/main/kotlin'
+        main.java.srcDirs += "src/main/kotlin"
     }
 
     defaultConfig {
         applicationId "com.hextunes.app"
         minSdk flutter.minSdkVersion
         targetSdk flutter.targetSdkVersion
-        // flutterVersionCode/Name are project properties injected by Flutter's Gradle plugin
-        // flutter.versionCode does NOT exist — that was the bug
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         multiDexEnabled true
@@ -40,7 +53,7 @@ android {
             shrinkResources false
         }
         debug {
-            applicationIdSuffix ".debug"
+            // No applicationIdSuffix — keeps the same app id for easier testing
         }
     }
 }
