@@ -22,7 +22,7 @@ def flutterVersionName = localProperties.getProperty("flutter.versionName") ?: "
 android {
     namespace "com.hextunes.app"
     compileSdk flutter.compileSdkVersion
-    ndkVersion flutter.ndkVersion
+    ndkVersion "25.1.8937393"  // Required by just_audio & permission_handler (NDK 25+)
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
