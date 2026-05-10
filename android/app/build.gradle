@@ -18,18 +18,23 @@ android {
         jvmTarget = "1.8"
     }
 
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
+
     defaultConfig {
         applicationId "com.hextunes.app"
         minSdk flutter.minSdkVersion
         targetSdk flutter.targetSdkVersion
-        versionCode flutter.versionCode
-        versionName flutter.versionName
+        // flutterVersionCode/Name are project properties injected by Flutter's Gradle plugin
+        // flutter.versionCode does NOT exist — that was the bug
+        versionCode flutterVersionCode.toInteger()
+        versionName flutterVersionName
         multiDexEnabled true
     }
 
     buildTypes {
         release {
-            // Uses debug signing for CI — replace with keystore for production
             signingConfig signingConfigs.debug
             minifyEnabled false
             shrinkResources false
