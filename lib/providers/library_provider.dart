@@ -23,9 +23,10 @@ class PlaylistsNotifier extends StateNotifier<AsyncValue<List<Playlist>>> {
   Future<void> _save(List<Playlist> p) async =>
       Hive.box('playlists').put('all', p.map((x) => x.toMap()).toList());
 
-  Future<void> createPlaylist(String name) async {
+  /// Create a new playlist (called from library_screen).
+  Future<void> create(String name) async {
     final cur = state.value ?? [];
-    final p = Playlist(id: _uuid.v4(), name: name,
+    final p   = Playlist(id: _uuid.v4(), name: name,
         songs: [], createdAt: DateTime.now());
     final upd = [...cur, p];
     state = AsyncValue.data(upd);
@@ -52,6 +53,13 @@ class PlaylistsNotifier extends StateNotifier<AsyncValue<List<Playlist>>> {
       if (p.id != playlistId) return p;
       return p.copyWith(songs: p.songs.where((s) => s.id != songId).toList());
     }).toList();
+    state = AsyncValue.data(upd);
+    await _save(upd);
+  }
+
+  Future<void> rename(String id, String newName) async {
+    final upd = (state.value ?? []).map((p) =>
+        p.id == id ? p.copyWith(name: newName) : p).toList();
     state = AsyncValue.data(upd);
     await _save(upd);
   }
