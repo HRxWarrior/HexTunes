@@ -1,35 +1,16 @@
-import 'package:on_audio_query/on_audio_query.dart';
-import '../../models/song_model.dart';
+// Local music scanning is temporarily disabled.
+// on_audio_query (^2.9.0) is incompatible with AGP 8.3.0 (missing namespace).
+// Audius (primary) and Jamendo (backup) still stream music fully.
+// Local scanning will be re-enabled once the package is updated.
+//
+// To re-enable: add `on_audio_query: ^2.9.0` back to pubspec.yaml once
+// the package publishes an AGP 8.x compatible release.
+
+import '../../../models/song.dart';
 
 class LocalMusicService {
-  final OnAudioQuery _query = OnAudioQuery();
+  Future<bool> requestPermission() async => false;
 
-  Future<bool> requestPermission() => _query.permissionsRequest();
-
-  Future<List<SongModel>> fetchLocalSongs() async {
-    try {
-      final songs = await _query.querySongs(
-        sortType:   SongSortType.TITLE,
-        orderType:  OrderType.ASC_OR_SMALLER,
-        uriType:    UriType.EXTERNAL,
-        ignoreCase: true,
-      );
-      return songs
-          .where((s) => s.isMusic == true && (s.duration ?? 0) > 10000)
-          .map(_mapSong)
-          .toList();
-    } catch (_) { return []; }
-  }
-
-  SongModel _mapSong(SongInfo s) => SongModel(
-    id:         's_${s.id}',
-    title:      s.title ?? 'Unknown',
-    artistName: s.artist ?? 'Unknown Artist',
-    albumName:  s.album,
-    streamUrl:  s.uri ?? '',
-    artworkUrl: null,
-    duration:   Duration(milliseconds: s.duration ?? 0),
-    source:     SongSource.local,
-    localPath:  s.data,
-  );
+  /// Returns an empty list — local scanning is pending package compatibility.
+  Future<List<Song>> fetchLocalSongs() async => [];
 }
