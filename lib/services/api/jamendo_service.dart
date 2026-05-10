@@ -3,7 +3,7 @@ import '../../models/song.dart';
 
 class JamendoService {
   static const _base = 'https://api.jamendo.com/v3.0';
-  static const _cid  = 'b6747d04'; // Free client_id — replace with yours from developer.jamendo.com
+  static const _cid  = 'b6747d04';
 
   final Dio _dio = Dio(BaseOptions(
     connectTimeout: const Duration(seconds: 10),
@@ -12,7 +12,7 @@ class JamendoService {
 
   Future<List<Song>> getTrending({int limit = 20}) async {
     try {
-      final res = await _dio.get('\$_base/tracks', queryParameters: {
+      final res = await _dio.get('$_base/tracks', queryParameters: {
         'client_id': _cid, 'format': 'json', 'limit': limit,
         'order': 'popularity_week', 'audioformat': 'mp32',
       });
@@ -23,7 +23,7 @@ class JamendoService {
 
   Future<List<Song>> searchTracks(String query, {int limit = 20}) async {
     try {
-      final res = await _dio.get('\$_base/tracks', queryParameters: {
+      final res = await _dio.get('$_base/tracks', queryParameters: {
         'client_id': _cid, 'format': 'json', 'limit': limit,
         'namesearch': query, 'audioformat': 'mp32',
       });
@@ -32,16 +32,22 @@ class JamendoService {
     } catch (_) { return []; }
   }
 
-  Song _songFromJson(Map<String, dynamic> j) => Song(
-    id: 'jamendo_\${j['id']}',
-    title: j['name'] as String? ?? 'Unknown',
-    artist: j['artist_name'] as String? ?? 'Unknown Artist',
-    artistId: 'jamendo_\${j['artist_id']}',
-    album: j['album_name'] as String?,
-    albumId: 'jamendo_\${j['album_id']}',
-    artworkUrl: j['album_image'] as String?,
-    streamUrl: j['audio'] as String?,
-    duration: Duration(seconds: int.tryParse(j['duration']?.toString() ?? '0') ?? 0),
-    source: SongSource.jamendo,
-  );
+  Song _songFromJson(Map<String, dynamic> j) {
+    final rawId       = j['id']?.toString()        ?? '';
+    final rawArtistId = j['artist_id']?.toString() ?? '';
+    final rawAlbumId  = j['album_id']?.toString()  ?? '';
+    return Song(
+      id:         'jamendo_$rawId',
+      title:      j['name']        as String? ?? 'Unknown',
+      artist:     j['artist_name'] as String? ?? 'Unknown Artist',
+      artistId:   'jamendo_$rawArtistId',
+      album:      j['album_name']  as String?,
+      albumId:    'jamendo_$rawAlbumId',
+      artworkUrl: j['album_image'] as String?,
+      streamUrl:  j['audio']       as String?,
+      duration: Duration(
+          seconds: int.tryParse(j['duration']?.toString() ?? '0') ?? 0),
+      source: SongSource.jamendo,
+    );
+  }
 }
